@@ -12,10 +12,6 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-
-    for i in request.args:
-        print(i, request.args[i])
-
     email = request.args.get('email')
     print(email)
     url = request.args.get('url')
@@ -26,3 +22,14 @@ def submit():
     model.Task(str(id), url, email).run()
 
     return jsonify({'id': str(id)}), 200
+
+@app.route('/check')
+def check():
+    id = request.args.get('id')
+    results = model.check(id)
+    if results['status'] == 'done':
+        return jsonify(results), 200
+    elif results['status'] == 'running':
+        return jsonify({'status': 'running'}), 102
+    else:
+        return jsonify({'status': 'error'}), 500
