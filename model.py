@@ -3,20 +3,19 @@ from threading import Thread
 import requests
 import hashlib
 from emailserve import send_results
+import os.path
 
-connection = sqlite3.connect('md5.db')
-conn = connection.cursor()
-
-try:
-    conn.execute('''CREATE TABLE tasks (
-                 ID text PRIMARY KEY,
-                 URL text,
-                 email text,
-                 progress text,
-                 hash text)''')
-    connection.commit()
-except:
-    pass
+if not(os.path.exists('md5.db')):
+    connection = sqlite3.connect('md5.db')
+    conn = connection.cursor()
+    with connection:
+        conn.execute('''CREATE TABLE tasks (
+                     ID text PRIMARY KEY,
+                     URL text,
+                     email text,
+                     progress text,
+                     hash text)''')
+        connection.commit()
 
 def md5(url):
     hash_md5 = hashlib.md5()
@@ -30,13 +29,14 @@ def md5(url):
 def check(id):
     connection = sqlite3.connect('md5.db')
     conn = connection.cursor()
-    conn.execute("""SELECT hash, progress, URL FROM tasks
+
+    with connection:
+        conn.execute("""SELECT hash, progress, URL FROM tasks
                     WHERE id = :id""", {'id': id})
-    raw_data = conn.fetchone()
-    return {'md5': raw_data[0],
+        raw_data = conn.fetchone()
+        return {'md5': raw_data[0],
             'status': raw_data[1],
             'url': raw_data[2]}
-    connection.close()
 
 class Task(Thread):
 
@@ -49,7 +49,7 @@ class Task(Thread):
     def run(self):
         connection = sqlite3.connect('md5.db')
         conn = connection.cursor()
-        with conn:
+        with connection:
             print('here')
             conn.execute("INSERT INTO tasks VALUES (:id, :url, :email, :progress, :hash)",
                   {'id': self.id, 'url': self.url, 'email': self.email, 'progress': 'running', 'hash':'None'})
