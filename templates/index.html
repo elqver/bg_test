@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MD5</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function() {
+            $('form').submit(function(e) {
+                e.preventDefault();
+
+                var xhttp = new XMLHttpRequest();
+
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+
+                        $('#id').text(this.responseText);
+                        console.log('asdfasfdsfd');
+                        console.log(this.response);
+                    }
+                };
+
+                var body = "submit?";
+
+                arr = $(this).serializeArray();
+                for (let i = 0; i < arr.length; i++) {
+                    body = body + arr[i].name + '=' + arr[i].value + '&';
+                }
+
+                xhttp.open("POST", body, true);
+                xhttp.send();
+
+                return true;
+            });
+        })
+    </script>
+
+</head>
+
+<body>
+
+    <form method="POST" action="submit" class="mx-auto" style="width: 500px; margin-top: 100px">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">File URL</label>
+            <input name="url" type="url" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-primary">Get MD5</button>
+
+        <p id='id'></p>
+    </form>
+
+
+
+</body>
+
+</html>
