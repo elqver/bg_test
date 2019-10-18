@@ -31,5 +31,7 @@ def check():
         return jsonify(results), 200
     elif results['status'] == 'running':
         return jsonify({'status': 'running'}), 102
+    elif results['status'] == 'does not exist':
+        return jsonify({'status': 'does not exist'}), 404
     else:
         return jsonify({'status': 'error'}), 500

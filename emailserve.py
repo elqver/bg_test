@@ -1,7 +1,8 @@
 import smtplib
 import emailconfig
 
-
+#Take target_email, url, hash, information for authorization from emailconfig.py
+#Connect to google's smtp server, send email to target
 def send_results(target_email, url, hash):
     if(target_email):
         gmail_user = emailconfig.email
