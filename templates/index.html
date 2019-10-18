@@ -11,26 +11,47 @@
             $('form').submit(function(e) {
                 e.preventDefault();
 
-                var xhttp = new XMLHttpRequest();
+                var idElement = $('#id');
+                var hashElement = $('#md');
+                idElement.text('Loading');
 
-                xhttp.onreadystatechange = function() {
+
+                var idhttp = new XMLHttpRequest();
+                var mdhttp = new XMLHttpRequest();
+
+                idhttp.onreadystatechange = function() {
+
                     if (this.readyState == 4 && this.status == 200) {
+                        var id = JSON.parse(this.responseText)['id'];
+                        idElement.text('Your id:  ' + id);
+                        hashElement.text('Loading');
+                        console.log(id);
+                        window.id = id;
+                        mdhttp.open("GET", 'check?id=' + id, true);
+                        while (!flag) {
+                            mdhttp.send();
+                        }
 
-                        $('#id').text(this.responseText);
-                        console.log('asdfasfdsfd');
-                        console.log(this.response);
                     }
                 };
 
-                var body = "submit?";
+                flag = false;
+                mdhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status != 102) {
+                        flag = true
+                        hashElement.text('Hash: ' + JSON.parse(this.responseText)['md5']);
+                    }
+                };
 
+
+                var body = "submit?";
                 arr = $(this).serializeArray();
                 for (let i = 0; i < arr.length; i++) {
                     body = body + arr[i].name + '=' + arr[i].value + '&';
                 }
+                idhttp.open("POST", body, true);
+                idhttp.send();
 
-                xhttp.open("POST", body, true);
-                xhttp.send();
 
                 return true;
             });
@@ -49,11 +70,12 @@
         </div>
         <div class="form-group">
             <label for="exampleInputPassword1">File URL</label>
-            <input name="url" type="url" class="form-control" id="exampleInputPassword1" placeholder="url-address">
+            <input name="url" type="url" class="form-control" id="exampleInputPassword1" placeholder="Enter URL">
         </div>
         <button type="submit" class="btn btn-primary">Get MD5</button>
 
-        <p id='id'></p>
+        <p id='id' style='padding-top: 30px'>Here will be your id</p>
+        <p id='md' style='padding-top: 30px'>Here will by your hash</p>
     </form>
 
 
