@@ -1,3 +1,4 @@
+This is a code of web server for md5 hash calculating by url.
 
 Start guide:
 
